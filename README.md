@@ -32,8 +32,8 @@ It uses Newspaper3k, BeautifulSoup, Gemini, LangChain (LLM Orchestration), LangS
    python main.py report
    ```
    This scrapes news articles and prepares vector embeddings which are them uploaded to MongoDB. Also creates a summary of all the news articles scraped.
-4. Run reporting and chatbot
+4. Run reporting job
    ```bash
    python main.py
    ```
-   This creates a scheduler that runs every hour updating the articles in the database meanwhile runs a chatbot using streamlit parallely.
+   This runs a scheduler that executes the reporting job every hour updating the articles in the database.

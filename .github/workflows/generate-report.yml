@@ -1,0 +1,59 @@
+name: Generate Report
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+          cache: 'pip'
+
+      - name: Install Latest pip
+        shell: bash
+        run: pip install --upgrade pip
+
+      - name: Install Dependencies
+        shell: bash
+        run: pip install -r requirements.txt
+
+      - name: Prepare Env File
+        shell: bash
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          LANGSMITH_TRACING: true
+          LANGSMITH_ENDPOINT: https://eu.api.smith.langchain.com
+          LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+          LANGSMITH_PROJECT: "News Analyzer"
+        run: |
+          touch .env
+          echo "GOOGLE_API_KEY=$GOOGLE_API_KEY" >> .env
+          echo "DB_URL=$DB_URL" >> .env
+          echo "DB_USERNAME=$DB_USERNAME" >> .env
+          echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+          echo "LANGSMITH_TRACING=$LANGSMITH_TRACING" >> .env
+          echo "LANGSMITH_ENDPOINT=$LANGSMITH_ENDPOINT" >> .env
+          echo "LANGSMITH_API_KEY=$LANGSMITH_API_KEY" >> .env
+          echo "LANGSMITH_PROJECT=$LANGSMITH_PROJECT" >> .env
+
+      - name: Run Report
+        shell: bash
+        run: python main.py report
+
+      - name: Read Report
+        shell: bash
+        run: cat ./data/latest_report.txt >> $GITHUB_STEP_SUMMARY

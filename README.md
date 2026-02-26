@@ -1,5 +1,9 @@
 # News Analyzer Agent
 
+[![Pull Request](https://github.com/nithin554/news-analyzer/actions/workflows/pull-request.yml/badge.svg)](https://github.com/nithin554/news-analyzer/actions/workflows/pull-request.yml)
+[![Merge](https://github.com/nithin554/news-analyzer/actions/workflows/push.yml/badge.svg)](https://github.com/nithin554/news-analyzer/actions/workflows/push.yml)
+[![Generate Report](https://github.com/nithin554/news-analyzer/actions/workflows/generate-report.yml/badge.svg)](https://github.com/nithin554/news-analyzer/actions/workflows/generate-report.yml)   
+
 This project is a Generative AI News Analyzer Agent that automatically gathers, processes, and summarizes recent information from bbc.co.uk, and then provides a simple way for users to chat with the system about the data collected.
 
 It uses Newspaper3k, BeautifulSoup, Gemini, LangChain (LLM Orchestration), LangSmith (Tracing), MongoDB (Vector Database) and Streamlit. 

@@ -15,7 +15,7 @@ It uses Newspaper3k, BeautifulSoup, Gemini, LangChain (LLM Orchestration), LangS
    docker pull ghcr.io/nithin554/news-analyzer:latest
    docker run -d --name news-analyzer -p 8501:8501 ghcr.io/nithin554/news-analyzer:latest
    ```
-   This runs streamlit on port 8501 and can be access via `http://localhost:8501/`
+   This runs streamlit on port 8501 and can be accessed via `http://localhost:8501/`
 ### Python
 
 1. Install the required dependencies:
@@ -26,7 +26,7 @@ It uses Newspaper3k, BeautifulSoup, Gemini, LangChain (LLM Orchestration), LangS
    ```bash
    python main.py chatbot
    ```
-   This runs streamlit on port 8501 and can be access via `http://localhost:8501/`
+   This runs streamlit on port 8501 and can be accessed via `http://localhost:8501/`
 3. Run the reporting application (Run this for the first time to prepare the data):
    ```bash
    python main.py report

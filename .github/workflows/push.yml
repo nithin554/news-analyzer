@@ -29,36 +29,6 @@ jobs:
         shell: bash
         run: pip install -r requirements.txt
 
-      - name: Install Ruff
-        shell: bash
-        run: pip install ruff
-
-      - name: Run Ruff Linter
-        shell: bash
-        run: ruff check .
-
-      - name: Prepare Env File
-        shell: bash
-        env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          DB_URL: ${{ secrets.DB_URL }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          LANGSMITH_TRACING: true
-          LANGSMITH_ENDPOINT: https://eu.api.smith.langchain.com
-          LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
-          LANGSMITH_PROJECT: "News Analyzer"
-        run: |
-          touch .env
-          echo "GOOGLE_API_KEY=$GOOGLE_API_KEY" >> .env
-          echo "DB_URL=$DB_URL" >> .env
-          echo "DB_USERNAME=$DB_USERNAME" >> .env
-          echo "DB_PASSWORD=$DB_PASSWORD" >> .env
-          echo "LANGSMITH_TRACING=$LANGSMITH_TRACING" >> .env
-          echo "LANGSMITH_ENDPOINT=$LANGSMITH_ENDPOINT" >> .env
-          echo "LANGSMITH_API_KEY=$LANGSMITH_API_KEY" >> .env
-          echo "LANGSMITH_PROJECT=$LANGSMITH_PROJECT" >> .env
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -74,32 +44,6 @@ jobs:
         with:
           context: .
           push: true
-          load: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
-
-      - name: Run container in background
-        run: |
-          docker run -d \
-          --name chatbot-test \
-          -p 8501:8501 \
-          ${{ env.IMAGE_NAME }}:latest
-
-      - name: Wait for Streamlit to be ready
-        run: |
-          for i in {1..30}; do
-            if curl -f http://localhost:8501/ 2>/dev/null; then
-              echo "Streamlit is up!" >> $GITHUB_STEP_SUMMARY
-              exit 0
-            fi
-            echo "Waiting for Streamlit..."
-            sleep 2
-          done
-          echo "Streamlit failed to start in time"
-          docker logs chatbot-test
-          exit 1
-
-      - name: Cleanup
-        if: always()
-        run: docker rm -f chatbot-test

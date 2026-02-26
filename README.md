@@ -13,7 +13,7 @@ It uses Newspaper3k, BeautifulSoup, Gemini, LangChain (LLM Orchestration), LangS
 ### Docker
    ```bash
    docker pull ghcr.io/nithin554/news-analyzer:latest
-   docker run -d --name news-analyzer -p 8501:8501 ghcr.io/nithin554/news-analyzer:latest
+   docker run --env-file /path/to/.env -d --name news-analyzer -p 8501:8501 ghcr.io/nithin554/news-analyzer:latest
    ```
    This runs streamlit on port 8501 and can be accessed via `http://localhost:8501/`
 ### Python

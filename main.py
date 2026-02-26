@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -48,7 +49,8 @@ def upload_doc(collection, chunk, embedding_vector):
                 "$setOnInsert": {
                     "text": chunk,
                     "embedding": embedding_vector,
-                    "source": "news_scraper"
+                    "source": "news_scraper",
+                    "timestamp": datetime.now(timezone.utc).isoformat()
                 }
             },
             upsert=True

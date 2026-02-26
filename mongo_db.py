@@ -39,5 +39,10 @@ class MongoDBConnector:
                     "numCandidates": 100,
                     "limit": 100
                 }
+            },
+            {
+                "$sort": {
+                    "timestamp": -1
+                }
             }
         ])

@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'terraform/**'
   pull_request:
     branches:
       - main
-    paths:
-      - 'terraform/**'
 
 jobs:
   terraform-plan:
@@ -39,3 +35,7 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan
+
+      - name: Terraform Apply
+        if: github.event_name == 'push'
+        run: terraform apply -auto-approve

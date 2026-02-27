@@ -10,6 +10,8 @@ env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}
   AWS_REGION: eu-north-1
   ECR_REPOSITORY: news-analyzer
+  ECS_SERVICE: news-analyzer-service
+  ECS_CLUSTER: news-analyzer-cluster
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -62,3 +64,7 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+
+      - name: Deploy to ECS
+        shell: bash
+        run: aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --force-new-deployment

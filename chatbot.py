@@ -27,6 +27,28 @@ def get_chatbot_response(user_question):
     Generates a response to a user's question based on the latest report.
     """
 
+    llm = ChatGoogleGenerativeAI(model=MODEL_NAME, google_api_key=GOOGLE_API_KEY)
+
+    template = """
+    Classify the user question into one of the following topics:
+    {topics}, greetings, other
+    
+    Question: {question}
+    
+    Respond with ONLY the topic name.
+    """
+    prompt = PromptTemplate(template=template, input_variables=["topics", "question"])
+    chain = prompt | llm
+
+    try:
+        response = chain.invoke({"topics": ", ".join(TOPICS), "question": user_question})
+        topic = response.content
+        print(topic)
+        if (topic not in TOPICS) and (topic != "greetings"):
+            return "Sorry, I only analyze news related to " + ", ".join(TOPICS) + "."
+    except Exception as e:
+        return f"Error getting response: {e}"
+
     embedding_model = GoogleGenerativeAIEmbeddings(
         model="gemini-embedding-001"
     )
@@ -39,8 +61,6 @@ def get_chatbot_response(user_question):
     while vector_chunks.alive:
         chunk = vector_chunks.try_next()
         docs.append(str(chunk.get("text")))
-
-    llm = ChatGoogleGenerativeAI(model=MODEL_NAME, google_api_key=GOOGLE_API_KEY)
 
     template = """
     You are a helpful AI assistant which answers questions only about news summaries scraped from bbc.co.uk related to {topics} topics, 
